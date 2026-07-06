@@ -178,7 +178,7 @@
     "@vscode/vsce": "^3.2.1",
     "esbuild": "^0.28.1",
     "eslint": "^9.0.0",
-    "mocha": "^10.8.2",
+    "mocha": "^11.7.6",
     "typescript": "^5.7.2"
   }
 }
