@@ -1,0 +1,1152 @@
+/*
+ * Notion-like preview styles.
+ *
+ * Colors are derived from VS Code theme variables so the preview follows the
+ * editor theme automatically (FR-203). `.force-light` / `.force-dark` override
+ * a small set of tokens when the user pins a theme (FR-701).
+ */
+
+:root {
+  --notion-page-width: 800px;
+
+  --notion-text: var(--vscode-editor-foreground, #37352f);
+  --notion-muted: var(--vscode-descriptionForeground, #787774);
+  --notion-bg: var(--vscode-editor-background, #ffffff);
+  --notion-border: var(--vscode-widget-border, rgba(120, 120, 120, 0.25));
+  --notion-card-bg: var(--vscode-textCodeBlock-background, rgba(135, 131, 120, 0.08));
+  --notion-link: var(--vscode-textLink-foreground, #2563eb);
+  --notion-accent: var(--vscode-textLink-activeForeground, #1d4ed8);
+
+  --notion-radius: 6px;
+  --notion-font: var(--vscode-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Hiragino Sans", "Noto Sans JP", sans-serif);
+  --notion-mono: var(--vscode-editor-font-family, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace);
+}
+
+body.force-light {
+  --notion-text: #37352f;
+  --notion-muted: #787774;
+  --notion-bg: #ffffff;
+  --notion-border: rgba(55, 53, 47, 0.16);
+  --notion-card-bg: rgba(247, 246, 243, 1);
+  --notion-link: #2563eb;
+}
+
+body.force-dark {
+  --notion-text: #e6e6e3;
+  --notion-muted: #9b9a97;
+  --notion-bg: #191919;
+  --notion-border: rgba(255, 255, 255, 0.13);
+  --notion-card-bg: rgba(255, 255, 255, 0.045);
+  --notion-link: #6ca8ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--notion-bg);
+  color: var(--notion-text);
+  font-family: var(--notion-font);
+  font-size: calc(16px * var(--notion-font-scale, 1));
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.layout {
+  display: flex;
+  align-items: flex-start;
+}
+
+.notion-page {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: var(--notion-page-width);
+  margin: 0 auto;
+  padding: 44px 64px 200px;
+}
+
+@media (max-width: 680px) {
+  .notion-page {
+    padding: 28px 22px 120px;
+  }
+}
+
+@media (max-width: 720px) {
+  .notion-page {
+    padding: 32px 22px 120px;
+  }
+}
+
+/* --- Headings --- */
+.notion-page h1,
+.notion-page h2,
+.notion-page h3,
+.notion-page h4,
+.notion-page h5,
+.notion-page h6 {
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 1.6em 0 0.4em;
+}
+
+.notion-page h1 {
+  font-size: 2.1em;
+  margin-top: 0.2em;
+}
+.notion-page h2 {
+  font-size: 1.55em;
+}
+.notion-page h3 {
+  font-size: 1.25em;
+}
+.notion-page h4 {
+  font-size: 1.05em;
+}
+.notion-page h5,
+.notion-page h6 {
+  font-size: 0.95em;
+  color: var(--notion-muted);
+}
+
+.notion-page p {
+  margin: 0.5em 0;
+}
+
+/* --- Links --- */
+.notion-page a {
+  color: var(--notion-link);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--notion-link) 35%, transparent);
+}
+.notion-page a:hover {
+  border-bottom-color: var(--notion-link);
+}
+
+/* --- Lists --- */
+.notion-page ul,
+.notion-page ol {
+  padding-left: 1.6em;
+  margin: 0.4em 0;
+}
+.notion-page li {
+  margin: 0.2em 0;
+}
+
+/* Task lists (FR-107) */
+.notion-page .task-list-item {
+  list-style: none;
+  margin-left: -1.4em;
+}
+.notion-page .task-list-item input[type="checkbox"] {
+  margin-right: 0.5em;
+  transform: translateY(1px);
+  accent-color: var(--notion-link);
+}
+
+/* --- Inline code --- */
+.notion-page :not(pre) > code {
+  font-family: var(--notion-mono);
+  font-size: 0.86em;
+  background: var(--notion-card-bg);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  color: #eb5757;
+}
+body.force-dark .notion-page :not(pre) > code,
+body.vscode-dark:not(.force-light) .notion-page :not(pre) > code {
+  color: #ff7b72;
+}
+
+/* --- Blockquote --- */
+/* VS Code's default webview stylesheet paints blockquotes with
+ * --vscode-textBlockQuote-background, which follows the EDITOR theme — on a
+ * light preview inside a dark editor that shows up as a dark box. Override it,
+ * and derive the bar from the text color so it follows light/dark correctly. */
+.notion-page blockquote {
+  margin: 0.8em 0;
+  padding: 0.2em 0 0.2em 1em;
+  background: transparent;
+  border-left: 3px solid color-mix(in srgb, var(--notion-text) 35%, transparent);
+  color: var(--notion-text);
+}
+
+/* --- Horizontal rule --- */
+.notion-page hr {
+  border: none;
+  border-top: 1px solid var(--notion-border);
+  margin: 2em 0;
+}
+
+/* --- Tables (FR-204: horizontal scroll) --- */
+.notion-page table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  font-size: 0.95em;
+  display: block;
+  overflow-x: auto;
+}
+.notion-page th,
+.notion-page td {
+  border: 1px solid var(--notion-border);
+  padding: 0.5em 0.8em;
+  text-align: left;
+}
+.notion-page th {
+  background: var(--notion-card-bg);
+  font-weight: 600;
+}
+.notion-page tbody tr:hover {
+  background: color-mix(in srgb, var(--notion-card-bg) 60%, transparent);
+}
+
+/* --- Code blocks (§15) --- */
+.notion-page .code-block {
+  margin: 1.2em 0;
+  border: 1px solid var(--notion-border);
+  border-radius: var(--notion-radius);
+  overflow: hidden;
+  background: var(--notion-card-bg);
+}
+.notion-page .code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--notion-border);
+  font-size: 0.78em;
+}
+.notion-page .code-lang {
+  color: var(--notion-muted);
+  font-family: var(--notion-mono);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.notion-page .copy-btn {
+  font: inherit;
+  font-size: 0.82em;
+  color: var(--notion-muted);
+  background: transparent;
+  border: 1px solid var(--notion-border);
+  border-radius: 4px;
+  padding: 2px 10px;
+  cursor: pointer;
+}
+.notion-page .copy-btn:hover {
+  color: var(--notion-text);
+  background: var(--notion-bg);
+}
+.notion-page .copy-btn:focus-visible {
+  outline: 2px solid var(--notion-link);
+  outline-offset: 1px;
+}
+.notion-page .copy-btn.copied {
+  color: #2e7d32;
+  border-color: #2e7d32;
+}
+.notion-page .code-block-body {
+  overflow-x: auto;
+}
+.notion-page .code-block-body pre {
+  margin: 0;
+  padding: 14px 16px;
+  font-family: var(--notion-mono);
+  font-size: 0.85em;
+  line-height: 1.55;
+  background: transparent !important;
+}
+.notion-page .code-block-body code {
+  font-family: var(--notion-mono);
+}
+/* VS Code's default webview stylesheet gives every `code` element the editor
+ * theme's --vscode-textPreformat-background/-foreground; inside a highlighted
+ * block that paints a dark chip behind each line. Shiki sets its own colors
+ * inline, so neutralize the defaults for code inside pre. */
+.notion-page pre code {
+  background: transparent;
+  color: inherit;
+}
+.notion-page .code-plain {
+  white-space: pre;
+  color: var(--notion-text);
+}
+
+/* --- Images (FR-206) --- */
+.notion-page .image-block {
+  margin: 1.2em 0;
+  text-align: center;
+}
+.notion-page .image-block img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--notion-radius);
+}
+.notion-page .image-block figcaption {
+  margin-top: 0.5em;
+  font-size: 0.85em;
+  color: var(--notion-muted);
+}
+
+/* Missing image block (FR-505) */
+.notion-page .missing-image {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  margin: 1.2em 0;
+  padding: 14px 16px;
+  border: 1px dashed var(--notion-border);
+  border-radius: var(--notion-radius);
+  color: var(--notion-muted);
+  font-size: 0.9em;
+  background: var(--notion-card-bg);
+}
+.notion-page .missing-image-icon {
+  font-size: 1.2em;
+}
+
+/* --- Callouts (§16) --- */
+.notion-page .callout {
+  display: flex;
+  gap: 0.7em;
+  margin: 1em 0;
+  padding: 14px 16px;
+  border-radius: var(--notion-radius);
+  background: var(--notion-card-bg);
+  border: 1px solid var(--notion-border);
+}
+.notion-page .callout-icon {
+  font-size: 1.15em;
+  line-height: 1.5;
+  flex: 0 0 auto;
+}
+.notion-page .callout-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.notion-page .callout-title {
+  font-weight: 700;
+  font-size: 0.74em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+  margin-bottom: 3px;
+}
+.notion-page .callout-content > :first-child {
+  margin-top: 0;
+}
+.notion-page .callout-content > :last-child {
+  margin-bottom: 0;
+}
+.notion-page .callout-note {
+  border-left: 3px solid #4a9eff;
+}
+.notion-page .callout-tip {
+  border-left: 3px solid #3fb950;
+}
+.notion-page .callout-important {
+  border-left: 3px solid #a371f7;
+}
+.notion-page .callout-warning {
+  border-left: 3px solid #d29922;
+}
+.notion-page .callout-caution {
+  border-left: 3px solid #f85149;
+}
+
+/* --- Mermaid (§14) --- */
+.notion-page .mermaid-block {
+  margin: 1.2em 0;
+  border: 1px solid var(--notion-border);
+  border-radius: var(--notion-radius);
+  overflow: hidden;
+  background: var(--notion-card-bg);
+}
+.notion-page .mermaid-block .block-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px 5px 12px;
+  border-bottom: 1px solid var(--notion-border);
+  font-size: 0.78em;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--notion-muted);
+}
+.notion-page pre.mermaid {
+  margin: 0;
+  padding: 18px 16px;
+  text-align: center;
+  overflow-x: auto;
+  background: transparent;
+}
+.notion-page pre.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Per-diagram toolbar */
+.mermaid-tools {
+  display: flex;
+  gap: 1px;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.mermaid-block:hover .mermaid-tools,
+.mermaid-tools:focus-within {
+  opacity: 1;
+}
+.mermaid-tools button {
+  font: inherit;
+  font-size: 1em;
+  line-height: 1;
+  min-width: 24px;
+  height: 22px;
+  color: var(--notion-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.mermaid-tools button:hover {
+  color: var(--notion-text);
+  background: var(--notion-bg);
+  border-color: var(--notion-border);
+}
+.mermaid-tools button.active {
+  color: var(--notion-link);
+  border-color: var(--notion-border);
+}
+
+/* Interactive (pan/zoom) viewport */
+.notion-page .mermaid-viewport {
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+.notion-page .mermaid-viewport:active {
+  cursor: grabbing;
+}
+.notion-page .mermaid-pan {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.notion-page .mermaid-pan svg {
+  display: block;
+  max-width: none !important;
+  height: auto;
+}
+.notion-page .mermaid-source {
+  margin: 0;
+  padding: 14px 16px;
+  overflow: auto;
+  max-height: 460px;
+  background: transparent;
+}
+.notion-page .mermaid-source code {
+  font-family: var(--notion-mono);
+  font-size: 0.82em;
+  line-height: 1.5;
+  white-space: pre;
+}
+/* Mermaid syntax error block (FR-403) */
+.notion-page .mermaid-error {
+  margin: 0;
+  padding: 14px 16px;
+  color: #f85149;
+  font-family: var(--notion-mono);
+  font-size: 0.82em;
+  white-space: pre-wrap;
+}
+.notion-page .mermaid-error-title {
+  font-weight: 600;
+  margin-bottom: 0.4em;
+}
+
+/* --- Missing file state (FR-603) --- */
+.notion-page .file-missing {
+  text-align: center;
+  color: var(--notion-muted);
+  padding-top: 80px;
+}
+.notion-page .file-missing-icon {
+  font-size: 3em;
+  margin-bottom: 0.2em;
+}
+
+/* Offset anchor targets so they are not hidden under the sticky toolbar. */
+.notion-page :where(h1, h2, h3, h4, h5, h6)[id] {
+  scroll-margin-top: 64px;
+}
+
+/* --- Toolbar --- */
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: color-mix(in srgb, var(--notion-bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--notion-border);
+}
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+.tb-group {
+  display: inline-flex;
+  gap: 2px;
+}
+.tb-btn {
+  font: inherit;
+  font-size: 0.8em;
+  line-height: 1;
+  color: var(--notion-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 5px 9px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tb-btn:hover {
+  color: var(--notion-text);
+  background: var(--notion-card-bg);
+  border-color: var(--notion-border);
+}
+.tb-btn:focus-visible {
+  outline: 2px solid var(--notion-link);
+  outline-offset: 1px;
+}
+body.no-toc .tb-btn[data-action='toggle-toc'] {
+  display: none;
+}
+
+/* --- Table of contents (outline) --- */
+.toc {
+  flex: 0 0 240px;
+  position: sticky;
+  top: 41px;
+  align-self: flex-start;
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+  padding: 28px 10px 28px 22px;
+  font-size: 0.82em;
+  line-height: 1.5;
+}
+body.toc-hidden .toc,
+body.no-toc .toc {
+  display: none;
+}
+@media (max-width: 760px) {
+  /* Too cramped to show the outline beside the text on a narrow pane. */
+  .toc {
+    display: none;
+  }
+}
+.toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.toc-item {
+  margin: 1px 0;
+}
+.toc-level-1 { padding-left: 0; }
+.toc-level-2 { padding-left: 12px; }
+.toc-level-3 { padding-left: 24px; }
+.toc-level-4 { padding-left: 36px; }
+.toc a {
+  display: block;
+  color: var(--notion-muted);
+  text-decoration: none;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.toc a:hover {
+  color: var(--notion-text);
+  background: var(--notion-card-bg);
+}
+.toc a.active {
+  color: var(--notion-link);
+  background: color-mix(in srgb, var(--notion-link) 12%, transparent);
+  font-weight: 600;
+}
+
+/* ============================ Visual polish ============================ */
+
+.notion-page > :first-child {
+  margin-top: 0;
+}
+.notion-page h1 {
+  letter-spacing: -0.012em;
+}
+.notion-page h2 {
+  letter-spacing: -0.008em;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--notion-link) 28%, transparent);
+}
+
+/* Subtle, theme-aware scrollbars */
+.toc::-webkit-scrollbar,
+.code-block-body::-webkit-scrollbar,
+.notion-page table::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+.toc::-webkit-scrollbar-thumb,
+.code-block-body::-webkit-scrollbar-thumb,
+.notion-page table::-webkit-scrollbar-thumb {
+  background: var(--notion-border);
+  border-radius: 6px;
+}
+/* VS Code's default scrollbar colors follow the editor theme; keep the track
+ * neutral so it doesn't show up dark on a light preview (and vice versa). */
+.toc::-webkit-scrollbar-track,
+.code-block-body::-webkit-scrollbar-track,
+.notion-page table::-webkit-scrollbar-track {
+  background: transparent;
+}
+.toc::-webkit-scrollbar-corner,
+.code-block-body::-webkit-scrollbar-corner,
+.notion-page table::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Tinted callout backgrounds per type */
+.notion-page .callout-note {
+  background: color-mix(in srgb, #4a9eff 9%, var(--notion-bg));
+}
+.notion-page .callout-tip {
+  background: color-mix(in srgb, #3fb950 9%, var(--notion-bg));
+}
+.notion-page .callout-important {
+  background: color-mix(in srgb, #a371f7 9%, var(--notion-bg));
+}
+.notion-page .callout-warning {
+  background: color-mix(in srgb, #d29922 11%, var(--notion-bg));
+}
+.notion-page .callout-caution {
+  background: color-mix(in srgb, #f85149 9%, var(--notion-bg));
+}
+
+/* Rounder, cleaner tables */
+.notion-page table {
+  border: 1px solid var(--notion-border);
+  border-radius: 8px;
+  border-spacing: 0;
+}
+.notion-page th,
+.notion-page td {
+  border: none;
+  border-bottom: 1px solid var(--notion-border);
+  border-right: 1px solid var(--notion-border);
+}
+.notion-page tr td:last-child,
+.notion-page tr th:last-child {
+  border-right: none;
+}
+.notion-page tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ============================ Zoom lightbox ============================ */
+
+.notion-page .image-block img.zoomable {
+  cursor: zoom-in;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.72);
+  overflow: hidden;
+  touch-action: none;
+}
+.lightbox-stage {
+  transform-origin: center center;
+  transition: transform 0.05s linear;
+  cursor: grab;
+  will-change: transform;
+}
+.lightbox-stage:active {
+  cursor: grabbing;
+}
+.lightbox-stage svg,
+.lightbox-stage img {
+  max-width: none !important;
+  height: auto;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+}
+/* SVG (mermaid) follows the theme background; images get a neutral white mat. */
+.lightbox-stage svg {
+  background: var(--notion-bg);
+}
+.lightbox-stage img {
+  background: #ffffff;
+}
+.lightbox-controls {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 6px;
+}
+.lightbox-controls button {
+  font: inherit;
+  font-size: 0.95em;
+  line-height: 1;
+  min-width: 34px;
+  height: 34px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 7px;
+  cursor: pointer;
+}
+.lightbox-controls button:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+.lightbox-hint {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.8em;
+  pointer-events: none;
+}
+
+/* ===================== Cognitive-load reducers ===================== */
+
+/* Reading progress bar */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 30;
+  background: transparent;
+  pointer-events: none;
+}
+.reading-progress-fill {
+  height: 100%;
+  width: 0;
+  background: var(--notion-link);
+  transition: width 0.1s linear;
+}
+
+/* Toolbar: icon buttons, current section, doc meta, auto-hide */
+.toolbar {
+  transition: transform 0.2s ease;
+}
+body.toolbar-hidden .toolbar {
+  transform: translateY(-100%);
+}
+.tb-btn.icon {
+  font-size: 0.95em;
+  min-width: 30px;
+  text-align: center;
+}
+.current-section {
+  font-size: 0.82em;
+  color: var(--notion-muted);
+  max-width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.doc-meta {
+  font-size: 0.76em;
+  color: var(--notion-muted);
+  margin-right: 4px;
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .doc-meta,
+  .current-section {
+    display: none;
+  }
+}
+
+/* Floating back-to-top */
+.fab-top {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 25;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-size: 1.1em;
+  line-height: 1;
+  color: var(--notion-text);
+  background: var(--notion-bg);
+  border: 1px solid var(--notion-border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.fab-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.fab-top:hover {
+  background: var(--notion-card-bg);
+}
+
+/* Collapsible headings */
+.notion-page .section-hidden {
+  display: none !important;
+}
+.notion-page :where(h1, h2, h3).collapsible {
+  position: relative;
+}
+.notion-page .collapse-toggle {
+  position: absolute;
+  left: -1.1em;
+  top: 0.18em;
+  width: 1em;
+  height: 1em;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--notion-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+.notion-page :where(h1, h2, h3).collapsible:hover .collapse-toggle,
+.notion-page :where(h1, h2, h3).collapsed .collapse-toggle {
+  opacity: 1;
+}
+.notion-page .collapse-toggle::before {
+  content: '▾';
+  display: inline-block;
+  transition: transform 0.12s ease;
+}
+.notion-page .collapsed .collapse-toggle::before {
+  transform: rotate(-90deg);
+}
+.notion-page .collapsed::after {
+  content: ' …';
+  color: var(--notion-muted);
+  font-weight: 400;
+}
+
+/* Heading hover anchor */
+.notion-page .heading-anchor {
+  margin-left: 0.4em;
+  color: var(--notion-muted);
+  text-decoration: none;
+  border: none;
+  opacity: 0;
+  font-weight: 400;
+  transition: opacity 0.12s ease;
+}
+.notion-page :where(h1, h2, h3, h4):hover .heading-anchor {
+  opacity: 0.6;
+}
+.notion-page .heading-anchor:hover {
+  opacity: 1 !important;
+  color: var(--notion-link);
+}
+
+/* Link affordances */
+.notion-page a.external-link::after {
+  content: '↗';
+  font-size: 0.82em;
+  margin-left: 0.15em;
+  opacity: 0.7;
+  border: none;
+}
+.notion-page a.doc-link {
+  border-bottom-style: dotted;
+}
+
+/* ===================== Block reorder (always on) ===================== */
+
+.notion-page {
+  position: relative;
+}
+.notion-page > * {
+  position: relative;
+}
+/* A single floating grip that follows the hovered block (positioned in JS). */
+.block-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1.1em;
+  height: 1.4em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--notion-muted);
+  cursor: grab;
+  opacity: 0;
+  border-radius: 4px;
+  font-size: 1em;
+  line-height: 1;
+  user-select: none;
+  z-index: 5;
+  transition: opacity 0.12s ease, background 0.12s ease;
+}
+.block-handle.show {
+  opacity: 0.5;
+}
+.block-handle:hover {
+  opacity: 1;
+  background: var(--notion-card-bg);
+}
+.block-handle:active {
+  cursor: grabbing;
+}
+.notion-page > *.dragging {
+  opacity: 0.4;
+}
+.drop-indicator {
+  height: 0;
+  margin: 3px 0;
+  border-top: 2px solid var(--notion-link);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* ===================== Git change highlights ===================== */
+
+/* Shown only while the ± toggle is on: green bar = block added or edited
+ * since HEAD; a red collapsible chip marks deleted content. */
+body.show-git-changes .notion-page > .git-added::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 3px;
+  bottom: 3px;
+  width: 3px;
+  border-radius: 2px;
+  background: #2ea043;
+}
+
+/* Deleted-lines chip: collapsed by default, click to reveal the old text. */
+body:not(.show-git-changes) .git-deleted-chunk {
+  display: none;
+}
+.git-deleted-chunk {
+  margin: 4px 0;
+}
+.git-deleted-toggle {
+  font: inherit;
+  font-size: 0.78em;
+  line-height: 1.4;
+  color: #f85149;
+  background: color-mix(in srgb, #f85149 8%, transparent);
+  border: 1px solid color-mix(in srgb, #f85149 35%, transparent);
+  border-radius: 5px;
+  padding: 1px 10px;
+  cursor: pointer;
+}
+.git-deleted-toggle:hover {
+  background: color-mix(in srgb, #f85149 16%, transparent);
+}
+.git-deleted-content {
+  margin: 4px 0 0;
+  padding: 10px 14px;
+  font-family: var(--notion-mono);
+  font-size: 0.82em;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  color: var(--notion-muted);
+  background: color-mix(in srgb, #f85149 7%, var(--notion-bg));
+  border-left: 3px solid #f85149;
+  border-radius: 0 6px 6px 0;
+}
+
+.tb-btn.pressed {
+  color: var(--notion-link);
+  background: var(--notion-card-bg);
+  border-color: var(--notion-border);
+}
+
+/* ===================== Find in page ===================== */
+
+.find-bar {
+  position: fixed;
+  top: 42px;
+  right: 18px;
+  z-index: 26;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: min(380px, calc(100vw - 36px));
+  padding: 6px 8px;
+  background: var(--notion-bg);
+  border: 1px solid var(--notion-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+.find-bar[hidden] {
+  display: none;
+}
+.find-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  font: inherit;
+  font-size: 0.85em;
+  color: var(--notion-text);
+  background: var(--notion-card-bg);
+  border: 1px solid var(--notion-border);
+  border-radius: 5px;
+  padding: 4px 8px;
+  outline: none;
+}
+.find-input:focus {
+  border-color: var(--notion-link);
+}
+.find-count {
+  flex: 0 0 auto;
+  font-size: 0.78em;
+  color: var(--notion-muted);
+  white-space: nowrap;
+}
+mark.find-hit {
+  background: color-mix(in srgb, #f5c518 45%, transparent);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+mark.find-hit.find-hit-current {
+  background: #ff9632;
+  color: #1f1f1f;
+}
+
+/* ===================== Frontmatter properties ===================== */
+
+.notion-page .frontmatter {
+  margin: 0 0 1.6em;
+  padding: 0 0 1em;
+  border-bottom: 1px solid var(--notion-border);
+  font-size: 0.88em;
+}
+.notion-page .fm-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 3px 0;
+}
+.notion-page .fm-key {
+  flex: 0 0 140px;
+  color: var(--notion-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.notion-page .fm-value {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  color: var(--notion-text);
+}
+.notion-page .fm-tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: var(--notion-card-bg);
+  border: 1px solid var(--notion-border);
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+.notion-page .fm-bool {
+  color: var(--notion-muted);
+}
+
+/* ===================== Math (KaTeX) ===================== */
+
+.notion-page .math-block {
+  margin: 1.2em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  text-align: center;
+}
+.notion-page .math-error {
+  color: #f85149;
+  background: color-mix(in srgb, #f85149 8%, var(--notion-bg));
+}
+
+/* ===================== Inline editing ===================== */
+
+.notion-page .block-editor {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--notion-mono);
+  font-size: 0.92em;
+  line-height: 1.6;
+  color: var(--notion-text);
+  background: var(--notion-card-bg);
+  border: 1px solid var(--notion-link);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin: 2px 0;
+  resize: none;
+  overflow: hidden;
+  outline: none;
+}
+.format-toolbar {
+  display: inline-flex;
+  gap: 2px;
+  background: var(--notion-bg);
+  border: 1px solid var(--notion-border);
+  border-radius: 6px;
+  padding: 2px;
+  margin: 2px 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
+}
+.format-toolbar button {
+  font: inherit;
+  font-size: 0.85em;
+  min-width: 26px;
+  height: 24px;
+  color: var(--notion-text);
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.format-toolbar button:hover {
+  background: var(--notion-card-bg);
+}

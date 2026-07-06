@@ -1,0 +1,12 @@
+node_modules/
+dist/
+out/
+media/preview.js
+media/preview.js.map
+media/vendor/
+*.vsix
+.vscode-test/
+.DS_Store
+
+# Local-only fixtures (personal / borrowed) — never committed
+fixtures/private/

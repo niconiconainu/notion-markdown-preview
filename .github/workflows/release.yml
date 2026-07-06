@@ -1,0 +1,85 @@
+name: Release
+
+# Fully automatic releases: every push to main checks whether the version in
+# package.json has been released yet. If not, it rebuilds from a clean
+# checkout, re-runs the supply-chain gates and tests, and publishes a GitHub
+# Release — creating the vX.Y.Z tag, attaching the .vsix, and using the
+# matching CHANGELOG section as notes. Merging a version-bump PR is the whole
+# release process; pushes without a version bump are a no-op.
+on:
+  push:
+    branches: [main]
+
+# The only write permission this workflow has is creating the tag + release.
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      # Pinned to full commit SHAs (see ci.yml for rationale).
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Check whether this version is already released
+        id: check
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code --tags origin "refs/tags/v$VERSION" >/dev/null 2>&1; then
+            echo "released=true" >> "$GITHUB_OUTPUT"
+            echo "v$VERSION is already released — nothing to do."
+          else
+            echo "released=false" >> "$GITHUB_OUTPUT"
+            echo "v$VERSION is not released yet — publishing."
+          fi
+
+      - name: Verify lockfile integrity
+        if: steps.check.outputs.released == 'false'
+        run: node scripts/check-lockfile.js
+
+      - name: Install dependencies
+        if: steps.check.outputs.released == 'false'
+        run: npm ci
+
+      - name: Audit dependencies
+        if: steps.check.outputs.released == 'false'
+        run: npm audit --audit-level=moderate
+
+      - name: Test
+        if: steps.check.outputs.released == 'false'
+        run: npm test
+
+      - name: Package .vsix
+        if: steps.check.outputs.released == 'false'
+        run: npx @vscode/vsce package --out "notion-markdown-preview-${{ steps.check.outputs.version }}.vsix"
+
+      # Fails when CHANGELOG.md lacks a section for this version — a bump
+      # without release notes should not ship.
+      - name: Extract release notes from CHANGELOG
+        if: steps.check.outputs.released == 'false'
+        run: node scripts/release-notes.js "${{ steps.check.outputs.version }}" > RELEASE_NOTES.md
+
+      - name: Create tag + GitHub Release
+        if: steps.check.outputs.released == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ steps.check.outputs.version }}" \
+            --target "$GITHUB_SHA" \
+            --title "v${{ steps.check.outputs.version }}" \
+            --notes-file RELEASE_NOTES.md \
+            "notion-markdown-preview-${{ steps.check.outputs.version }}.vsix"

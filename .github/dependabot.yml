@@ -1,0 +1,21 @@
+# Keep dependencies patched, but with humans in the loop:
+# grouped weekly PRs are reviewable; auto-merge is intentionally NOT enabled
+# (a malicious release published upstream should never flow in unreviewed).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+    # Security advisories still open individual PRs immediately.
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

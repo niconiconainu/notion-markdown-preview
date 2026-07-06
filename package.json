@@ -1,0 +1,184 @@
+{
+  "name": "notion-markdown-preview",
+  "displayName": "Notion-like Markdown Preview",
+  "description": "Preview Markdown and Notion-exported documents in a clean Notion-like UI inside VS Code.",
+  "version": "0.11.0",
+  "publisher": "notion-markdown-preview",
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/niconiconainu/notion-markdown-preview.git"
+  },
+  "bugs": {
+    "url": "https://github.com/niconiconainu/notion-markdown-preview/issues"
+  },
+  "engines": {
+    "vscode": "^1.96.0",
+    "node": ">=22"
+  },
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "markdown",
+    "preview",
+    "notion",
+    "mermaid",
+    "documentation"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:markdown"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "notionPreview.open",
+        "title": "Open Notion Preview",
+        "category": "Notion Preview",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "notionPreview.toggleTheme",
+        "title": "Toggle Light/Dark Theme",
+        "category": "Notion Preview",
+        "icon": "$(color-mode)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "notionPreview.open",
+          "when": "resourceLangId == markdown",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "notionPreview.open",
+          "when": "resourceLangId == markdown"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "notionPreview.open",
+          "when": "resourceLangId == markdown",
+          "group": "navigation@99"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "notionPreview.open",
+          "when": "resourceExtname == .md",
+          "group": "navigation@99"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "notionPreview.open",
+        "key": "ctrl+k n",
+        "mac": "cmd+k n",
+        "when": "editorLangId == markdown"
+      }
+    ],
+    "configuration": {
+      "title": "Notion Markdown Preview",
+      "properties": {
+        "notionPreview.theme": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "light",
+            "dark"
+          ],
+          "default": "auto",
+          "description": "Preview theme. 'auto' follows the VS Code color theme."
+        },
+        "notionPreview.pageWidth": {
+          "type": "number",
+          "default": 800,
+          "minimum": 480,
+          "maximum": 1400,
+          "description": "Maximum content width of the preview page in pixels."
+        },
+        "notionPreview.enableMermaid": {
+          "type": "boolean",
+          "default": true,
+          "description": "Render mermaid code blocks as diagrams."
+        },
+        "notionPreview.enableRawHtml": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow raw HTML in markdown. Disabled by default for security."
+        },
+        "notionPreview.enableMath": {
+          "type": "boolean",
+          "default": true,
+          "description": "Render $...$ and $$...$$ TeX math with KaTeX (bundled locally, no CDN)."
+        },
+        "notionPreview.showFrontmatter": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show YAML frontmatter as a Notion-style properties block at the top of the page."
+        },
+        "notionPreview.openLinksInPreview": {
+          "type": "boolean",
+          "default": true,
+          "description": "Open links to other Markdown files in a preview panel instead of the text editor."
+        },
+        "notionPreview.updateMode": {
+          "type": "string",
+          "enum": [
+            "onSave",
+            "debounced"
+          ],
+          "default": "onSave",
+          "description": "When to update the preview. 'onSave' updates on file save; 'debounced' updates while typing."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "node esbuild.js --production",
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "compile-tests": "tsc -p tsconfig.test.json",
+    "test": "npm run compile-tests && mocha",
+    "lint": "eslint src",
+    "check:lockfile": "node scripts/check-lockfile.js",
+    "check:audit": "npm audit --audit-level=moderate",
+    "package": "npx @vscode/vsce package"
+  },
+  "overrides": {
+    "serialize-javascript": "^7.0.7"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "katex": "^0.16.22",
+    "markdown-it": "^14.1.0",
+    "markdown-it-task-lists": "^2.1.1",
+    "mermaid": "^11.4.1",
+    "sanitize-html": "^2.13.1",
+    "shiki": "^1.24.0"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.x",
+    "@types/sanitize-html": "^2.13.0",
+    "@types/vscode": "^1.96.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "@vscode/vsce": "^3.2.1",
+    "esbuild": "^0.28.1",
+    "eslint": "^9.0.0",
+    "mocha": "^10.8.2",
+    "typescript": "^5.7.2"
+  }
+}
