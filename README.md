@@ -5,6 +5,10 @@ VS Code. This extension is **read-only** by design — it does not re-implement
 Notion's editor, database, or collaboration features. It simply makes the
 documents you already write feel good to read inside the editor.
 
+<p align="center">
+  <img src="docs/demo.gif" alt="Notion-like Markdown Preview in action" width="800">
+</p>
+
 ## Features
 
 - 🪶 Notion-like Markdown preview (centered page, generous spacing, readable width)

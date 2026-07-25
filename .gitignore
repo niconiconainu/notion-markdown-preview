@@ -10,3 +10,8 @@ media/vendor/
 
 # Local-only fixtures (personal / borrowed) — never committed
 fixtures/private/
+
+# Raw screen recordings / working media — never committed
+# (the README demo GIF lives under docs/ and is committed intentionally)
+*.mov
+*.mp4
