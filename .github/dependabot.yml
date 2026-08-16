@@ -13,6 +13,13 @@ updates:
         update-types:
           - minor
           - patch
+    ignore:
+      # @types/node tracks the `engines.node` floor in package.json, not the
+      # newest Node release. Bumping it would let the type checker accept APIs
+      # that are missing on the oldest runtime we claim to support.
+      - dependency-name: "@types/node"
+        update-types:
+          - version-update:semver-major
     # Security advisories still open individual PRs immediately.
 
   - package-ecosystem: github-actions
