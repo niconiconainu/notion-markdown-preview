@@ -3,6 +3,42 @@
 All notable changes to the **Notion-like Markdown Preview** extension are
 documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [Unreleased]
+
+### Security
+
+- Cleared every open advisory in the dependency tree (CI's
+  `npm audit --audit-level=moderate` gate was failing on `main`): `brace-expansion`,
+  `dompurify`, `fast-uri`, `js-yaml`, `linkify-it`, `nanoid`, `postcss` and
+  `undici` are all patched. `npm audit` now reports **0 vulnerabilities**.
+- Added a `diff` override (`^8.0.3`) so the mocha 11 test toolchain does not
+  pull the advisory-flagged `diff` 8.0.2 (GHSA-73rr-hh4g-fpgx).
+
+### Changed
+
+- **KaTeX 0.16 → 0.18.** 0.18 prefixes KaTeX's internal CSS class names. The
+  extension bundles KaTeX's own stylesheet alongside its own rendered HTML, and
+  the only class the preview code targets is the unchanged `.katex` root, so
+  math rendering is unaffected.
+- **Shiki 1 → 4.** The `createHighlighter` / `codeToHtml` API used by the
+  renderer is unchanged; highlight output was verified identical in shape.
+- Toolchain: ESLint 9 → 10, mocha 10 → 11, `@vscode/test-electron` 2 → 3,
+  `@vscode/test-cli` 0.0.10 → 0.0.15, plus patch/minor bumps for
+  markdown-it, mermaid, sanitize-html, typescript-eslint, esbuild and vsce.
+
+### Deferred (intentionally not upgraded)
+
+- **TypeScript 7** — `@typescript-eslint` 8.67 (latest) still declares
+  `peerDependencies.typescript: ">=4.8.4 <6.1.0"`, so TypeScript 6 or 7 breaks
+  `npm install` and linting. Revisit once typescript-eslint ships TS 7 support.
+- **markdown-it 15** — ships ESM-only bundled types behind `exports`, which the
+  `moduleResolution: "Node"` (node10) setting in `tsconfig.test.json` cannot
+  read. Needs a real resolver migration plus reworking the derived
+  `StateInline` / `StateBlock` types in four files.
+- **`@types/node` 26** — deliberately pinned to the `engines.node` floor (22) so
+  the type checker cannot green-light APIs missing on the oldest supported
+  runtime.
+
 ## [0.11.0] - 2026-07-03
 
 ### Added
