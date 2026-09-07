@@ -159,10 +159,10 @@
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
-    "katex": "^0.18.4",
+    "katex": "^0.18.5",
     "markdown-it": "^14.3.0",
     "markdown-it-task-lists": "^2.1.1",
-    "mermaid": "^11.4.1",
+    "mermaid": "^11.17.2",
     "sanitize-html": "^2.13.1",
     "shiki": "^4.4.3"
   },
@@ -171,14 +171,14 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.x",
     "@types/sanitize-html": "^2.13.0",
-    "@types/vscode": "^1.96.0",
-    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@types/vscode": "^1.136.0",
+    "@typescript-eslint/eslint-plugin": "^8.69.0",
     "@typescript-eslint/parser": "^8.0.0",
     "@vscode/test-cli": "^0.0.15",
     "@vscode/test-electron": "^3.1.0",
     "@vscode/vsce": "^3.9.2",
     "esbuild": "^0.28.2",
-    "eslint": "^10.8.1",
+    "eslint": "^10.10.0",
     "mocha": "^11.8.0",
     "typescript": "^5.9.3"
   }
