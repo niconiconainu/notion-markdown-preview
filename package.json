@@ -160,7 +160,7 @@
   "dependencies": {
     "gray-matter": "^4.0.3",
     "katex": "^0.18.4",
-    "markdown-it": "^14.3.0",
+    "markdown-it": "^15.0.0",
     "markdown-it-task-lists": "^2.1.1",
     "mermaid": "^11.4.1",
     "sanitize-html": "^2.13.1",
